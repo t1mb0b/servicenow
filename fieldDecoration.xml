@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="windows-1252" ?>  
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">  
+<j:set var="jvar_n" value="place_call:${ref}"/>  
+<a id="${jvar_n}" onclick="placeCallString('${ref}')"  name="${jvar_n}">  
+    <img border="0" src="images/icons/phone.gifx" title="Place Call" alt="Place Call"/>  
+</a>  
+<script>  
+function placeCallString(reference) {  
+ alert('You pushed the button.');  
+ var phoneNumber = g_form.getValue(reference.split('.')[1]);  
+ alert(phoneNumber);  
+ if(phoneNumber =='')  
+  alert('This field is empty.');  
+ else  
+  window.open('callto:' + phoneNumber,'_call');  
+}   
+</script>  
+</j:jelly>  
+
+
+
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+<g:evaluate var="jvar_guid" expression="gs.generateGUID(this);"/>
+<j:set var="jvar_n" value="show_lync_${jvar_guid}:${ref}"/>
+<a class="ref-button btn btn-default btn-ref" style="padding:5px 6px 7px;" id="${jvar_n}" onclick="invokeCall('${ref}');">  
+  <img border="0" src="/lync_call.gifx" title="${gs.getMessage('Lync Call')}"/>  
+</a> 	
+<script>
+function invokeCall(reference) {
+var tck = g_form.getValue('number');
+if(tck.indexOf('INC') >= 0){
+ var url = 'tel:+1' + g_form.getReference('caller_id').phone;
+}
+else{
+var url = 'tel:+1' + g_form.getReference('u_user').phone;
+}
+var w = getTopWindow();
+w.open(url, '_self');
+
+}
+</script>
+</j:jelly>
