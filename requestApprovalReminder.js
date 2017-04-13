@@ -35,7 +35,7 @@ while (app.next()) {
 				if (itemReq.get(ritm.request.sys_id)) {
 					if (numRitms > 1) {
 						// If the Parent REQ has more than one item, we may not want to cancel it. So, we create a task for SD to look at
-						var gTask = new GlideRecord('u_graham_tasks');
+						var gTask = new GlideRecord('u_gtasks');
 						gTask.initialize();
 						gTask.short_description = "Please investigate outstanding approval for " + ritm.number;
 						gTask.u_description_html = ritm.number + " belongs parent request " + itemReq.number;
