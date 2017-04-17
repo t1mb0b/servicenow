@@ -2,7 +2,7 @@
 var ourUser = gs.getUser();
 var isVIP = gs.getUser().getRecord().getValue('vip');
 var catItem = "2b7e060237e3ae0053856ec2b3990e6f"; //Default catalog item is question
-//gs.log("TM===> Email From is " + email.from + " and email.direct is " + email.direct, "Q: HR Inbound Action");
+//gs.log("TM===> Email From is " + email.from + " and email.direct is " + email.direct, "Q: Inbound Action");
 
 //current.location = ourUser.getLocation();
 //Script to remove security text from emails
@@ -50,7 +50,7 @@ ritmRec.addQuery("request", placeOrder.getValue('sys_id'));
 gs.log("TM===> Cart is " + placeOrder.getValue('sys_id'), "Q: HR Inbound Action");
 ritmRec.query();  
 if(ritmRec.next()){
-	gs.log("TM===> Item returned " + ritmRec.sys_id + " | " + ritmRec.number + " | " + ritmRec.cat_item, "Q: HR Inbound Action");
+	gs.log("TM===> Item returned " + ritmRec.sys_id + " | " + ritmRec.number + " | " + ritmRec.cat_item, "Q: Inbound Action");
 	var ritmSysID = ritmRec.sys_id;
 }  
 
@@ -60,7 +60,7 @@ emailRec.addQuery("uid", email.uid);
 emailRec.orderByDesc("sys_created_on");  
 emailRec.query();  
 if(emailRec.next()){ 
-  gs.log("TM===> Attachment " + emailRec.sys_id + " from email " + email.uid, "Q: HR Inbound Action");
+  gs.log("TM===> Attachment " + emailRec.sys_id + " from email " + email.uid, "Q: Inbound Action");
   GlideSysAttachment.copy("sys_email", emailRec.sys_id, "sc_req_item", ritmRec.sys_id);  
 }  
 
