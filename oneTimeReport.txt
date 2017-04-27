@@ -1,0 +1,1 @@
+/sys_report_template.do?sysparm_field=state&sysparm_type=bar&sysparm_table=incident&sysparm_from_list=true&sysparm_chart_size=large&sysparm_manual_labor=true&sysparm_query=active%3Dtrue%5Eassignment_group%3Df30cead2b5897400bb05d180e2312603%5Eassigned_toISEMPTY%5EORassigned_to%3D7e2f23bd2bcda648b750c03fe8da15bf
