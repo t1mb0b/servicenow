@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>SAPUI5 single file template | nabisoft</title>
+        <script src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+            id="sap-ui-bootstrap"
+            data-sap-ui-theme="sap_bluecrystal"
+            data-sap-ui-libs="sap.m"
+            data-sap-ui-bindingSyntax="complex"
+            data-sap-ui-compatVersion="edge"
+            data-sap-ui-preload="async"></script>
+            <!-- use "sync" or change the code below if you have issues -->
+
+        <!-- XMLView -->
+        <script id="myXmlView" type="ui5/xmlview">
+    <mvc:View
+            controllerName="MyController"
+            xmlns="sap.m"
+            xmlns:mvc="sap.ui.core.mvc"
+            xmlns:u="sap.ui.unified"
+            xmlns:core="sap.ui.core">
+
+<Button id="newTask" press="createTask" text="Create Task"/>
+	<List
+		id="myList"
+		enablebusyindicator="true"
+		headerText="Tasks"
+		growing="true"
+		items="{
+			path: '/'
+		}" >
+		<StandardListItem
+			title="{number}"
+			description="{short_description}"/>
+	</List>
+
+                
+
+    </mvc:View>
+        </script>
+
+        <script>
+            sap.ui.getCore().attachInit(function () {
+                               //### Controller ###
+                sap.ui.define([
+                    "sap/ui/core/mvc/Controller",
+                    "sap/ui/model/odata/v2/ODataModel",
+                    "sap/ui/model/json/JSONModel",
+                    "sap/m/MessageToast"
+                ], function (Controller, ODataModel, JSONModel, MessageToast) {
+                    "use strict";
+
+                //### Controller ###
+                sap.ui.controller("MyController", {
+                    onInit : function () {
+                    	
+                    	var snowData = new JSONModel();
+                    	this.getView().setModel(snowData);
+                    	
+                    	var requestBody = "";
+                    	
+                    	var client=new XMLHttpRequest();
+                    	client.open("get","https://dev11951.service-now.com/api/now/table/u_tim_tasks?sysparm_query=ORDERBYDESCnumber&sysparm_fields=number%2C%20short_description&sysparm_limit=10");
+                    	client.setRequestHeader('Accept','application/json');
+                    	client.setRequestHeader('Content-Type','application/json');
+	                 	client.setRequestHeader('Authorization', 'Basic '+btoa('sapuser'+':'+'Access!23'));
+                    	client.onreadystatechange = function() { 
+                    	if(this.readyState == this.DONE) {
+                    			//document.getElementById("response").innerHTML=this.status + this.response;
+                    			var oData = JSON.parse(this.response);
+                    			snowData.setData(oData.result);
+                    		}
+                    	}; 
+                    	client.send(requestBody);
+                   },
+                   
+                   createTask: function() {
+                	   var requestBody = "{\"short_description\":\"Testing\",\"work_notes\":\"Do Stuff\"}"; 
+
+                	   var client=new XMLHttpRequest();
+                	   client.open("post","https://dev11951.service-now.com/api/now/table/u_tim_tasks?sysparm_fields=number%2Csys_id");
+
+                	   client.setRequestHeader('Accept','application/json');
+                	   client.setRequestHeader('Content-Type','application/json');
+
+                	   //Eg. UserName="admin", Password="admin" for this code sample.
+                	   client.setRequestHeader('Authorization', 'Basic '+btoa('sapuser'+':'+'Access!23'));
+
+                	   client.onreadystatechange = function() { 
+                	   	if(this.readyState === this.DONE) {
+                	   		var oResponse = JSON.parse(this.response);
+                	   		MessageToast.show("We have created " + oResponse.result.number + " with " + oResponse.result.sys_id);
+                	   	}
+                	   }; 
+                	   client.send(requestBody);
+                	   var oList = this.byId("myList");
+                	   oList.getBinding('items').refresh();
+           			
+                   }
+                });
+                });
+
+                //### THE APP: place the XMLView somewhere into DOM ###
+                sap.ui.xmlview({
+                    viewContent : jQuery("#myXmlView").html()
+                }).placeAt("content");
+
+            });
+        </script>
+
+    </head>
+
+    <body class="sapUiBody">
+        <div id="content"></div>
+    </body>
+</html>
