@@ -1,0 +1,5 @@
+Applies to: task
+queries from: sys_email
+
+current.addQuery("target_table", parent.sys_class_name);
+current.addQuery("instance", parent.sys_id);
