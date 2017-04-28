@@ -67,3 +67,130 @@ Comments not updated for any task on this Project.
 </j2:if>
 
 </j:jelly>
+
+
+
+=================
+
+
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+<g:evaluate>
+	var ul = new GlideRecord("sys_user");
+	ul.get(gs.getUserID());
+        var mylevel = ul.u_employee_level;
+</g:evaluate>
+
+<j:if test="${mylevel &gt; '2'}">
+<div id="mgr_corner_header" class="mgr_crn_hdr"><span style="mgr_crn_hdr_txt"><b><u>Managers Only</u></b></span></div>
+
+<div id="mgr_corner">
+ <div id="mgr_left_box" class="mgr_corner_box">
+   <b>HR Functions</b>
+   <ul>
+   <li><a href="http://grahamsd/newhire" target="_blank">Submit a New Hire Request</a></li>
+   <li><a href="http://grahamsd/separation" target="_blank">Submit Separation Request</a></li>
+   <li><a href="http://grahamsd/positionchange" target="_blank">Submit Position Change Request</a></li>
+   </ul></div> 
+<!--
+<div id="mgr_middle_box" class="mgr_corner_box">
+   <b>Reports</b>
+   <ul>
+   <li><a href="#" target="_blank">Report 1</a></li>
+   <li><a href="#" target="_blank">Report 2</a></li>
+   <li><a href="#" target="_blank">Report 3</a></li>
+   </ul></div> -->
+<!--
+  <div id="mgr_right_box" class="mgr_corner_box">   
+   <b>Initiatives</b>
+   <ul>
+   <li><i>Coming Soon!</i></li>
+   </ul></div> -->
+</div>
+</j:if>
+
+
+</j:jelly>
+
+
+=======================
+
+
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+<g2:evaluate var="jvar_pic" object="true">
+  var gr = new GlideRecord("u_graham_innovations");
+  gr.query();
+  gr;
+</g2:evaluate>
+
+<j2:while test="$[jvar_pic.next()]">
+<g2:evaluate var="jvar_uPrime" expression="gs.getUser().getUserByID('$[gr.u_ghmi_contact]').getFullName()" />
+<g2:evaluate var="jvar_uCr" expression="gs.getUser().getUserByID('$[gr.opened_by]').getFullName()" />
+
+<g2:evaluate var="jvar_sComments" object="true">
+  var upd = gr.comments.getJournalEntry(-1);
+  var na = upd.split('\n');
+  na;
+</g2:evaluate>
+
+<table style="border: 1px solid black; border-collapse: collapse;">
+  <tr>
+    <td colspan="8" style="border: 1px solid black; border-collapse: collapse; padding: 10px;"><b>$[gr.u_ghmi_title]</b></td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;"><b>Prime Contact:</b></td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;">$[jvar_uPrime]</td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;"><b>AoE:</b></td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;">$[gr.u_ghmi_aoe]</td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;"><b>Submitted by:</b></td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;">$[jvar_uCr]</td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;"><b>Submitted on:</b></td>
+    <td style="border: 1px solid black; border-collapse: collapse; padding: 10px;">$[gr.sys_created_on]</td>
+  </tr>
+  <tr>
+    <td colspan="8" style="border: 1px solid black; border-collapse: collapse; padding: 10px;">$[gr.u_ghmi_purpose]</td>
+  </tr>
+  <tr>
+    <td colspan="8" style="border: 1px solid black; border-collapse: collapse; padding: 10px;">
+    	<j2:if test="$[jvar_sComments.length gt 0]">
+  		<j2:forEach var="jvar_sComm" items="$[jvar_sComments]">
+    			<br/>$[jvar_sComm]
+  		</j2:forEach>
+	</j2:if>
+    
+    </td>
+  </tr>
+</table>
+<br />
+
+
+</j2:while>
+
+
+
+</j:jelly>
+
+
+=============================
+
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<g:evaluate var="jvar_delivery_time" jelly="true">
+		var nameValue = jelly.jvar_cart_item.getDisplayName();
+		var deliveryValue;
+		var gr = new GlideRecord("sc_cat_item");
+		gr.addQuery("name", nameValue);
+		gr.query();
+		if(gr.next()){
+		   deliveryValue = gr.delivery_time.getDisplayValue();
+		}
+		deliveryValue;
+	</g:evaluate>
+
+	${jvar_delivery_time}
+
+</j:jelly> ]]
+
+
