@@ -19,3 +19,51 @@
 </table>
 
 </j:jelly>
+
+===================
+
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+<g2:evaluate var="jvar_gr" object="true">
+var gr = new GlideRecord('u_graham_innovations');
+gr.orderBy('number');
+gr.query();
+gr;
+</g2:evaluate>
+<j2:if test="$[!jvar_gr.hasNext()]">
+Comments not updated for any task on this Project.
+</j2:if>
+<j2:if test="$[jvar_gr.hasNext()]">
+<j2:while test="$[gr.next()]">
+<tr align='center'>
+<td><b>Task Number:</b></td>
+</tr><br></br>
+<tr>
+<td>$[gr.number]</td>
+</tr><br></br>
+<tr align='center'>
+<td><b>Comments:</b></td>
+</tr><br></br>
+<tr>
+<g2:evaluate var="jvar_updates" object="true">
+  var upd = gr.comments.getJournalEntry(-1);
+  var na = upd.split('\n');
+  na;
+  </g2:evaluate>
+<td><p><j2:if test="$[jvar_updates.length gt 0]">
+  <j2:forEach var="jvar_upd" items="$[jvar_updates]">
+  <br/>$[jvar_upd]
+  </j2:forEach>
+  </j2:if>
+</p></td>
+</tr><br></br>
+ 
+ 
+<tr align='center'>
+<td><b>-----------------------------------------------------------------------------------------------------------</b></td>
+</tr><br></br>
+</j2:while>
+</j2:if>
+
+</j:jelly>
