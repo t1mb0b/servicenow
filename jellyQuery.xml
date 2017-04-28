@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+
+<g:evaluate var="jvar_user" object="true">
+		var u = new GlideRecord("sys_user");
+                u.orderBy('user_name');
+		u.addQuery('u_employee_level','>', 4);
+                u.query();
+		u;
+</g:evaluate>
+
+<table>
+		<j:while test="${jvar_user.next()}">
+			<tr>
+				<td>${HTML:jvar_user.getValue('name')}</td>
+			</tr>
+		</j:while>
+</table>
+
+</j:jelly>
