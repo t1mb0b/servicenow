@@ -26,7 +26,7 @@
 <j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
 
 <g2:evaluate var="jvar_gr" object="true">
-var gr = new GlideRecord('u_graham_innovations');
+var gr = new GlideRecord('u_table_innovations');
 gr.orderBy('number');
 gr.query();
 gr;
@@ -89,9 +89,9 @@ Comments not updated for any task on this Project.
  <div id="mgr_left_box" class="mgr_corner_box">
    <b>HR Functions</b>
    <ul>
-   <li><a href="http://grahamsd/newhire" target="_blank">Submit a New Hire Request</a></li>
-   <li><a href="http://grahamsd/separation" target="_blank">Submit Separation Request</a></li>
-   <li><a href="http://grahamsd/positionchange" target="_blank">Submit Position Change Request</a></li>
+   <li><a href="http://address/newhire" target="_blank">Submit a New Hire Request</a></li>
+   <li><a href="http://address/separation" target="_blank">Submit Separation Request</a></li>
+   <li><a href="http://address/positionchange" target="_blank">Submit Position Change Request</a></li>
    </ul></div> 
 <!--
 <div id="mgr_middle_box" class="mgr_corner_box">
