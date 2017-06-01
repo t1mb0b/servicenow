@@ -1,0 +1,8 @@
+var numberThings = new GlideRecord("tablegoeshere");
+numberThings.addQuery("number", "");
+numberThings.query();
+while (numberThings.next()) {
+    numberThings.autoSysFields(false);
+    numberThings.setWorkflow(false);
+    numberThings.number = getNextObjNumberPadded();
+}
