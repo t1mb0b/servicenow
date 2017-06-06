@@ -11,3 +11,11 @@ for (var key in oResponse) {
     gs.print(key + " -> " + oResponse[key]);
   }
 }
+
+
+=====
+  
+ Object.keys(oResponse).forEach(function(key) {
+gs.print(key + " -> " + oResponse[key]);
+});
+
