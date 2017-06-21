@@ -1,0 +1,3 @@
+INSTANCENAME.service-now.com/styles/retina_icons/retina_icons.html
+INSTANCENAME.service-now.com/image_picker.do
+https://<instancename>/service-now.com/styles/heisenberg/styleguide/docs/index.html 
