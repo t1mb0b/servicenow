@@ -77,3 +77,42 @@ gs.print(key + " -> " + oResponse[key]);
 
 
 ======
+ 
+ 
+ try { 
+ var r = new sn_ws.RESTMessageV2('Connect@Plant', 'get');
+
+//override authentication profile 
+//authentication type ='basic'/ 'oauth2'
+//r.setAuthentication(authentication type, profile name);
+
+ var response = r.execute();
+ var responseBody = response.getBody();
+ var httpStatus = response.getStatusCode();
+}
+catch(ex) {
+ var message = ex.getMessage();
+}
+var parser = new JSONParser();
+	var parsedResponse = parser.parse(responseBody);
+	
+	for (var i = 0 ; i < parsedResponse.length; i++) {
+		var myObject = parsedResponse[i];
+		
+		var title = parsedResponse[i].title;
+		var type = parsedResponse[i].type;
+		var description = parsedResponse[i].description;
+		var appGroup = parsedResponse[i].appGroup;
+		
+				
+		var gr = new GlideRecord('u_imp_connectatplant');
+		gr.initialize();
+		gr.u_description = description;
+		gr.u_name = title;
+		gr.u_type = type;
+		gr.u_appgroup = appGroup;
+		gr.sys_import_set =  '9c75f6030ff776003867715ce1050ee0';
+		gr.insert();
+		
+		
+		}
