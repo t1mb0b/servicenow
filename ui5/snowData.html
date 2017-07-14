@@ -61,10 +61,10 @@
                     	var requestBody = "";
                     	
                     	var client=new XMLHttpRequest();
-                    	client.open("get","https://dev11951.service-now.com/api/now/table/u_tim_tasks?sysparm_query=ORDERBYDESCnumber&sysparm_fields=number%2C%20short_description&sysparm_limit=10");
+                    	client.open("get","https://instance.service-now.com/api/now/table/u_tim_tasks?sysparm_query=ORDERBYDESCnumber&sysparm_fields=number%2C%20short_description&sysparm_limit=10");
                     	client.setRequestHeader('Accept','application/json');
                     	client.setRequestHeader('Content-Type','application/json');
-	                 	client.setRequestHeader('Authorization', 'Basic '+btoa('sapuser'+':'+'Access!23'));
+	                 	client.setRequestHeader('Authorization', 'Basic '+btoa('user'+':'+'pass'));
                     	client.onreadystatechange = function() { 
                     	if(this.readyState == this.DONE) {
                     			//document.getElementById("response").innerHTML=this.status + this.response;
@@ -79,13 +79,13 @@
                 	   var requestBody = "{\"short_description\":\"Testing\",\"work_notes\":\"Do Stuff\"}"; 
 
                 	   var client=new XMLHttpRequest();
-                	   client.open("post","https://dev11951.service-now.com/api/now/table/u_tim_tasks?sysparm_fields=number%2Csys_id");
+                	   client.open("post","https://instance.service-now.com/api/now/table/u_tim_tasks?sysparm_fields=number%2Csys_id");
 
                 	   client.setRequestHeader('Accept','application/json');
                 	   client.setRequestHeader('Content-Type','application/json');
 
                 	   //Eg. UserName="admin", Password="admin" for this code sample.
-                	   client.setRequestHeader('Authorization', 'Basic '+btoa('sapuser'+':'+'Access!23'));
+                	   client.setRequestHeader('Authorization', 'Basic '+btoa('user'+':'+'pass'));
 
                 	   client.onreadystatechange = function() { 
                 	   	if(this.readyState === this.DONE) {
