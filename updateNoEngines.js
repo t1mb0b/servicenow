@@ -12,3 +12,21 @@ while (rec.next()) {
 	rec.update();
 }
 }
+
+
+=====
+	
+updateMyInc();
+function updateMyInc(){
+var ihatethis = new GlideRecord('incident');
+ihatethis.addQuery('u_business_line', 'Amazon');
+ihatethis.query();
+ihatethis.setWorkflow(false);
+ihatethis.setUseEngines(false);
+
+while (ihatethis.next()) {
+	ihatethis.setValue('u_ref_business_line','b938f3eadb2bf6001810fb37bf9619c6'); 
+	ihatethis.update();
+	gs.info(ihatethis.getLastErrorMessage());
+}
+}
