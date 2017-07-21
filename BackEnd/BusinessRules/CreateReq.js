@@ -1,3 +1,8 @@
+/*
+before, 1,000
+
+
+*/
 (function executeRule(current, previous /*null when async*/) {
 	// Set sRequestedFor variable
 	var sRequestedFor = !current.requested_by ? gs.getUserID() : current.getValue('requested_by');
