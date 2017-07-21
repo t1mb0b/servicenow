@@ -9,20 +9,20 @@
 		if(oInc.next()) {
 			incObj.description = oInc.description.toString();
 			incObj.short_description = oInc.getValue("short_description");
+			incObj.caller = oInc.getValue("caller_id");
   		 }
-		 var json = new JSON();
-		 var encObj = json.encode(incObj);
+		 var encObj = JSON.stringify(incObj);
 		 //gs.log('encObj is: ' + encObj);
 		 return encObj;
 	},
   
   /* Client Script */
   
-  function onLoad() {
+ function onLoad() {
 	// Get the URL Parameter Values
 	var sIncident = getParameterValue('sysparm_sys_id');
 	var sUser = getParameterValue('sysparm_user');
-	// Instantiate the GlideAjax Call
+	// Instantiate the GlideAjax Call; check if parms exist first
 	if (sIncident && sUser) {
 		var oGa = new GlideAjax('FAIAjaxUtils');
 		oGa.addParam('sysparm_name','getIncValues');
@@ -31,7 +31,7 @@
 	}
 	// Function to populate the form vars
 	function populateVars(res) {
-		answer = res.responseXML.documentElement.getAttribute("answer").evalJSON();
+		var answer = JSON.parse(res.responseXML.documentElement.getAttribute("answer"));
 		g_form.setValue('requested_for', sUser);
 		g_form.setValue('summary_req', answer.short_description);
 		g_form.setValue('request_details', answer.description);
