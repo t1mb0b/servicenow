@@ -29,3 +29,34 @@
     }
     gs.info("Saving the current watchlist as {0}", currentWatchList);
     current.setValue("watch_list", currentWatchList);
+	    
+	    
+==================================
+	
+// Incident sys_id to test with  
+var inc = '965c9e5347c12200e0ef563dbb9a7156';  
+// Instantiate Members array  
+var aMembers = [];  
+// Specify Groups  
+var aGroups = ['Service Desk','Hardware'];  
+// Iterate through groups and get the members; push sys_ids to aMembers array  
+aGroups.forEach(function(group){  
+var gr = new GlideRecord('sys_user_grmember');  
+gr.addQuery('group.name', group);  
+gr.addQuery('user.active', true);  
+gr.query();  
+while(gr.next()) {  
+aMembers.push(gr.getValue('user'));  
+}  
+});  
+// Query the Inc table to get the Incident  
+var incGr = new GlideRecord("incident");  
+if(incGr.get('sys_id', inc)) {  
+// Filter our duplicates  
+var watchList = aMembers.filter(function(member){  
+return aMembers.indexOf(member);  
+});  
+incGr.watch_list = watchList.join();  
+// Update the record  
+incGr.update();  
+}  
