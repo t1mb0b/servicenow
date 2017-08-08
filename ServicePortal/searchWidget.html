@@ -1,0 +1,358 @@
+<div class="list-group">
+  <a ng-class="{active: !data.t}" class="list-group-item" ng-href="?id=search&q={{data.q}}">
+    <i class="fa fa-chevron-right"/>
+    <span class="m-l-sm">${All}</span>
+  </a>
+
+  
+  <a class="list-group-item" data-toggle="collapse" data-target="#knowledge">
+    <i class="fa fa-chevron-down"/>
+    <span class="m-l-sm">${Knowledge Bases}</span>
+    <!--<span class="badge">{{data.kb.articleCount}}</span>-->
+  </a>
+  <div class="collapse in" id="knowledge">
+    <a ng-class="{active: base.highlight}" class="list-group-item shift-nav" ng-repeat="base in data.kb.bases" ng-href="?id=search&t=kb&q={{data.q}}&kb={{base.sys_id}}">
+      <i class="fa fa-chevron-right"/>
+      <span class="m-l-sm">{{base.title}}</span>
+      <span class="badge">{{base.articleCount}}</span>
+    </a>
+  </div>
+  
+  <a class="list-group-item" data-toggle="collapse" data-target="#service_catalog">
+    <i class="fa fa-chevron-down"/>
+    <span class="m-l-sm">${Service Catalogs}</span>
+    <!--<span class="badge">{{data.sc.itemCount}}</span>-->
+  </a>
+  <div class="collapse in" id="service_catalog">
+  	<a ng-class="{active: catalog.highlight}" class="list-group-item shift-nav" ng-repeat="catalog in data.sc.catalogs" ng-href="?id=search&t=sc&q={{data.q}}&sc={{catalog.sys_id}}">
+      <i class="fa fa-chevron-right"/>
+      <span class="m-l-sm">{{catalog.title}}</span>
+      <span class="badge">{{catalog.count}}</span>
+    </a>
+  </div>
+
+  <!--Search Groups taht are not kb_knowledge-->
+  <a ng-repeat="group in data.searchGroups" ng-class="{active: data.t==group.table}" class="list-group-item" ng-href="?id=search&t={{group.table}}&q={{data.q}}">
+    <i class="fa fa-chevron-right"/>
+    <span class="m-l-sm">{{group.label || group.table}}</span>
+    <span ng-if="group.count>0" class="badge">{{group.count}}</span>
+  </a>
+</div>
+
+=====
+
+// populate the 'data' object
+
+data.isLoggedIn = gs.isLoggedIn();
+data.q = encodeURIComponent($sp.getParameter('q'));//query
+data.t = $sp.getParameter('t');//table
+data.query = '123TEXTQUERY321=' + data.q;
+data.kb = {};
+data.kb.highlight = data.kb.id == null
+data.kb.articleCount = 0;
+data.kb.id = $sp.getParameter('kb');//kb clicked
+data.kb.query = 'active=true^valid_to>=javascript:gs.daysAgoStart(0)';
+data.kb.bases = [];
+data.kb.articles = [];
+data.sc = {};
+data.sc.id = $sp.getParameter('sc');//sc clicked
+data.sc.itemCount = 0;
+data.sc.query = 'active=true';
+data.sc.catalogs = [];
+data.portalID = $sp.getPortalRecord().getDisplayValue('sys_id');
+data.searchGroups = [];
+//console.log('data obj initialized...' + JSON.stringify(data,'','  '));
+
+// searching sp search groups
+var sg = GlideRecord('sp_search_group');
+sg.addQuery('sp_portal',data.portalID);
+sg.addQuery('active',true);
+sg.addQuery('name','!=','kb_knowledge');
+sg.orderBy('order');
+sg.query();
+while(sg.next()) {
+	var group = {};
+	group.table = sg.getValue('name');
+	group.label = sg.getValue('label');
+	group.count = getCount(sg);
+	data.searchGroups.push(group);
+}
+//console.log('added search groups...' + JSON.stringify(data.searchGroups,'','  '));
+
+// searching catalogs
+var sc = GlideRecord('sc_catalog');
+sc.addQuery('active',true);
+sc.orderBy('title');
+sc.query();
+while(sc.next()) {
+	var scItem = new GlideRecord("sc_cat_item");
+	scItem.addQuery('sc_catalogs', sc.getValue('sys_id'));
+	scItem.addEncodedQuery(data.sc.query);
+	scItem.addQuery('123TEXTQUERY321', decodeURIComponent(data.q));
+	scItem.query();
+	var catalog = {
+		title: sc.title.getDisplayValue(),
+		sys_id: sc.getValue('sys_id'),
+		count: 0,
+		highlight: data.sc.id == sc.getValue('sys_id'),
+		items: []
+	}
+	while (scItem.next()) {
+		var canView = GlideappCatalogItem.get(scItem.getValue('sys_id')).canView();
+		if(canView){
+			catalog.items.push(scItem.getDisplayValue());
+			data.sc.itemCount++;
+			catalog.count++;
+		}
+	}
+	data.sc.catalogs.push(catalog);
+}
+console.log('searching catalogs...' + JSON.stringify(data.sc.catalogs,'','  '));
+
+
+var kb = GlideRecord('kb_knowledge_base');
+kb.addQuery('active',true);
+kb.orderBy('title');
+kb.query();
+while(kb.next()) {
+	var articles = new GlideRecord("kb_knowledge");
+	articles.addQuery('kb_knowledge_base', kb.getValue('sys_id'));
+	articles.addEncodedQuery(data.kb.query);
+	articles.addQuery('123TEXTQUERY321', decodeURIComponent(data.q));
+	articles.query();
+	var base = {
+		title: kb.title.getDisplayValue(),
+		sys_id: kb.getValue('sys_id'),
+		articleCount: 0,
+		query: 'kb_knowledge_list.do?sysparm_query=' + articles.getEncodedQuery(),
+		highlight: data.kb.id == kb.getValue('sys_id')
+	}
+	while (articles.next()) {
+		if ($sp.canReadRecord('kb_knowledge', articles.getUniqueValue())) {
+			base.articleCount++;
+			data.kb.articleCount++;
+		}
+	}
+	data.kb.bases.push(base);
+}
+
+//console.log('searching knowledge bases...' + JSON.stringify(data.kb,'','  '));
+
+function getCount(searchGroup){
+	var table = searchGroup.getValue('name');
+	var query = searchGroup.getValue('condition');
+	var ga = new GlideRecord(table);
+	ga.addEncodedQuery(query);
+	ga.addEncodedQuery(data.query);
+	ga.query();
+	var rows = ga.getRowCount();
+	//console.log('rows: ' + rows);
+	return rows
+}
+
+=====
+
+<div>
+  <div class="panel panel-default">
+
+    <div ng-if="data.results.length==0">
+      <div class="panel-heading"><h4 class="panel-title">${No results}</h4></div>
+      <div class="panel-body wrapper break-word">
+        <p>${Your search - <b>{{data.q}}</b> - did not match any documents}</p>
+        <p>${Suggestions}:</p>
+        <ul>
+          <li>${Make sure all words are spelled correctly}</li>
+          <li>${Try different, more general, or fewer keywords}</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div ng-if="data.results.length>0" class="panel-heading break-word"><h4 class="panel-title">${Search results for '{{data.prettyQuery}}'}</h4></div>
+
+    <div ng-repeat="item in data.results | orderBy:'score':true" class="panel-body b-b ">
+      
+      <div ng-if="item.type == 'kb'">
+        <a href="?id=kb_article&amp;sys_id={{item.sys_id}}" class="h4 text-primary m-b-sm block">
+          <i class="fa fa-book m-r-sm"></i>
+          <span ng-bind-html="highlight(item.short_description, data.q)"></span></a>
+        <p ng-bind-html="highlight(item.text, data.q)"></p>
+        <span class="text-muted">${Article}: {{item.number}}</span>
+        <span class="text-muted">
+          <span class="m-l-xs m-r-xs"> &middot; </span>
+          ${Published}: <sn-day-ago date="item.published"/>
+        </span>
+      </div>
+
+      <div ng-if="item.type == 'sc'">
+        <a href="?id={{item.page}}&amp;sys_id={{item.sys_id}}" class="h4 text-primary m-b-sm block">
+          <i class="fa fa-shopping-cart m-r-sm"></i>
+          <span ng-bind-html="highlight(item.name, data.q)"></span></a>
+        <div ng-style="getBGImage(item)" ng-if="item.picture" class="img-responsive m-r item-image pull-left"></div>
+        <p ng-bind-html="highlight(item.short_description, data.q)"></p>
+        <span class="text-muted m-r-sm" ng-if="item.price != '$0.00'">{{item.price}}</span>
+      </div>
+      
+      <div ng-if="item.type == 'qa'">
+        <a href="?id=kb_social_qa_question&amp;question_id={{item.sys_id}}" class="h4 text-primary m-b-sm block">
+          <i class="fa fa-comments-o m-r-sm"></i>
+          <span ng-bind-html="highlight(item.label, data.q)"></span></a>
+        <p ng-bind-html="highlight(item.text, data.q)"></p>
+        <div>
+          <a ng-repeat="tag in item.tags" ng-href="?id=sqa_tagged_questions&sys_id={{tag.sys_id}}" class="question-tag">{{tag.name}}</a>
+        </div>
+        <span class="text-muted">${Asked} <sn-day-ago date="item.sys_created_on"/></span>
+        <span class="text-muted">
+          <span class="m-l-xs m-r-xs" ng-if="!$first"> &middot; </span>
+          ${Score}: {{item.votes}}
+        </span>
+      </div>
+      
+      <div ng-if="item.type == 'rec'">
+        <a href="?id={{item.page}}&amp;sys_id={{item.sys_id}}&amp;table={{item.table}}" class="h4 text-primary m-b-sm block">
+          <span ng-bind-html="highlight(item.label, data.q)"></span>
+        </a>
+        <span class="text-muted" ng-repeat="f in item.fields | limitTo: 4">
+          <span class="m-l-xs m-r-xs" ng-if="!$first"> &middot; </span>
+          {{f.label}}: <span ng-bind-html="highlight(f.display_value, data.q)"></span>
+        </span>
+      </div>
+
+      <div class="clearfix"></div>
+
+    </div>
+  </div>
+</div>
+
+====
+
+// populate the 'data' object
+
+data.isLoggedIn = gs.isLoggedIn();
+data.q = encodeURIComponent($sp.getParameter('q')); //query
+data.prettyQuery = decodeURIComponent(data.q)
+data.t = $sp.getParameter('t'); //table
+data.query = '123TEXTQUERY321=' + data.q;
+data.kb = {};
+data.kb.highlight = data.kb.id == null;
+data.kb.articleCount = 0;
+data.kb.id = $sp.getParameter('kb'); //kb clicked
+data.kb.query = 'active=true^valid_to>=javascript:gs.daysAgoStart(0)';
+data.kb.bases = [];
+data.kb.articles = [];
+data.sc = {};
+data.sc.id = $sp.getParameter('sc'); //sc clicked
+data.sc.itemCount = 0;
+data.sc.query = 'active=true';
+data.sc.catalogs = [];
+data.portalID = $sp.getPortalRecord().getDisplayValue('sys_id');
+data.searchGroups = [];
+data.results = [];
+//console.log('data obj initialized...' + JSON.stringify(data,'','  '));
+
+// searching sp search groups
+var sg = GlideRecord('sp_search_group');
+sg.addQuery('sp_portal', data.portalID);
+sg.addQuery('active', true);
+sg.addQuery('name', '!=', 'kb_knowledge');
+sg.orderBy('order');
+sg.query();
+while (sg.next()) {
+    addSearchTable(sg);
+}
+//console.log('added search groups...' + JSON.stringify(data.searchGroups,'','  '));
+
+// searching catalogs
+if (gs.isLoggedIn() && data.kb.id == null && (data.t == null || data.t == 'sc')) {
+    var scItem = new GlideRecord('sc_cat_item');
+    if (data.sc.id) {
+        scItem.addQuery('sc_catalogs', data.sc.id);
+    }
+    scItem.addEncodedQuery(data.sc.query);
+    scItem.addQuery('123TEXTQUERY321', decodeURIComponent(data.q));
+    scItem.query();
+    while (scItem.next()) {
+        var canView = GlideappCatalogItem.get(scItem.getValue('sys_id')).canView();
+        if (canView) {
+            var item = {};
+            item.type = 'sc';
+            $sp.getRecordDisplayValues(item, scItem, 'name,short_description,picture,price,sys_id');
+            item.score = parseInt(scItem.ir_query_score.getDisplayValue());
+            item.page = scItem.getRecordClassName() == 'sc_cat_item_guide' ? 'sc_cat_item_guide' : 'sc_cat_item';
+            data.results.push(item);
+        }
+    }
+}
+
+// search kb articles
+if (data.sc.id == null && (data.t == null || data.t == 'kb')) {
+    var articles = new GlideRecord('kb_knowledge');
+    if (data.kb.id) {
+        articles.addQuery('kb_knowledge_base', data.kb.id);
+    }
+    articles.addEncodedQuery(data.kb.query);
+    articles.addQuery('123TEXTQUERY321', decodeURIComponent(data.q));
+    articles.query();
+    while (articles.next()) {
+        if ($sp.canReadRecord('kb_knowledge', articles.getUniqueValue())) {
+            var article = {};
+            $sp.getRecordDisplayValues(article, articles, 'sys_id,number,short_description,published,text');
+            article.type = 'kb';
+            if (!article.text) article.text = '';
+            article.text = $sp.stripHTML(article.text) + '';
+            article.text = article.text.substring(0, 200);
+            article.score = parseInt(article.ir_query_score.getDisplayValue());
+            data.results.push(article);
+        }
+        $sp.logSearch('kb_knowledge', data.q, articles.getRowCount());
+    }
+}
+//console.log('searching knowledge bases...' + JSON.stringify(data.kb,'','  '));
+
+function addSearchTable(sg) {
+    var table = sg.getValue('name');
+    var condition = sg.getValue('condition');
+    var gr = GlideRecordSecure(table);
+    if (condition) {
+        gr.addEncodedQuery(condition);
+    }
+    gr.addQuery('123TEXTQUERY321', data.q);
+    //console.log(table + '.encodedQuery: ' + gr.getEncodedQuery());
+    gr.query();
+    while (gr.next()) {
+        //console.log('table: ' + table + 'gr.number: ' + gr.getValue('number'));
+        if (data.t != table && data.t) {
+            continue;
+        }
+        var rec = {};
+        rec.type = 'rec';
+        rec.table = table;
+        rec.sys_id = gr.getUniqueValue();
+        rec.page = sg.getDisplayValue('sp_page');
+        if (!rec.page) rec.page = 'form';
+        rec.label = gr.getDisplayValue();
+        rec.score = parseInt(gr.ir_query_score.getDisplayValue());
+        rec.fields = [];
+
+        var fields = $sp.getListColumns(table, 'sp');
+        fields = fields.split(',');
+        for (var i in fields) {
+            var field = fields[i];
+            var obj = getField(gr, field);
+            if (rec.label != obj.value) rec.fields.push(obj);
+        }
+
+        data.results.push(rec);
+    }
+}
+
+function getField(gr, name) {
+    var f = {};
+    f.display_value = gr.getDisplayValue(name);
+    f.value = gr.getValue(name);
+    var ge = gr.getElement(name);
+    if (ge == null) return f;
+
+    f.type = ge.getED().getInternalType();
+    f.label = ge.getLabel();
+    return f;
+}
