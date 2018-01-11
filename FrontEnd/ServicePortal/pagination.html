@@ -1,0 +1,7 @@
+$scope.$watchCollection('filterData',function(newValue,oldValue) 
+{ng-repeat="record in filterData = (snippet.records | filter : searchRecords) | limitTo:6:6*(currentPage-1)"
+
+
+<uib-pagination class="pagination" total-items="filterData.length" ng-model="currentPage" 
+ng-change="pageChanged()" boundary-link-numbers="true" rotate="false" num-pages="numPages" 
+items-per-page="itemsPerPage" max-size="3"></uib-pagination>
