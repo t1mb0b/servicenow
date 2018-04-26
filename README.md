@@ -24,3 +24,18 @@ the times its hard to avoid is when you have very specific engine ordering issue
 Method A: Comment out code, and adding notes stating why you change it
 Method B: Inactivate if possible, then, Copy. This is hard to see if anything has been added to the OOB because deactivating doesn't trigger a customer update.
 Method C: Add Comment stating you are making a copy, inactivate it. Copy it. This will ensure the OOB thing comes up in a skipped update.
+
+///
+
+1.  Using OOB more than customization.
+2.  Stop trying to replicate the old manual method exactly in the digitized world.
+3.  Take the time optimize and enhance the current manual method prior designing the digital method
+4.  Establish reasonable goals, with enough time to complete them
+5.  If you hire 3rd party:
+     a.  if they say that is a bad idea, find out why
+     b.  if they show you why and you don't care, review again to see why you need it
+     c.  get documentation on what they built so you know how to support it without having to research everything when it has an issue
+     d.  make sure they test `without admin or themselves`
+      e.  make sure you test without admin or as yourself
+6.  stop trying to rebuild exactly what you had in your last itsm platform/tool:  landesk, cherwell, bmc, etc.  Do it better in SN.  If that tool was so great, why leave it?
+
