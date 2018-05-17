@@ -1,3 +1,23 @@
+<!--
+Show Update/Client/FormContextMenu
+onClick: showForm()
+Condition: gs.hasRole('itil') && !current.isNewRecord()
+-->
+
+function showForm() {
+	var sysId = typeof rowSysId == 'undefined' ? gel('sys_uniqueValue').value : rowSysId;
+	var oModal = new GlideModal("merge_duplicate_finance_request");
+	oModal.setTitle("Merge Duplicate");
+	oModal.setPreference('sysparm_sysID', sysId);
+	oModal.setPreference('sysparm_table', "sn_sm_finance_request");
+	oModal.setBackdropStatic(true);
+	oModal.render();
+}
+
+<!----->
+
+
+
 <g:ui_form>
 <div class="col-md-12" style="margin-bottom:12px;">
 	Please select the Finance Request to Merge on to
