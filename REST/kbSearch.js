@@ -5,7 +5,7 @@
 	//
 	var sQuery = _getParamAsString("query");
 	var kGr = new GlideRecordSecure('kb_knowledge');
-	kGr.addQuery('kb_knowledge_base.title', 'Graham Knowledge');
+	kGr.addQuery('kb_knowledge_base.title', 'Tim Knowledge');
 	kGr.addQuery("workflow_state", "published");
 	if (sQuery != '') {
 		kGr.addQuery("123TEXTQUERY321", sQuery);
@@ -17,7 +17,7 @@
 			number : kGr.getValue("number"),
 			short_description : kGr.getValue("short_description"),
 			text: kGr.getValue('text'),
-			url : sInstance + "graham/?id=kb_article2&number=" + kGr.getValue("number")
+			url : sInstance + "tim/?id=kb_article2&number=" + kGr.getValue("number")
 		});
 	}
 	// Let's disable caching
