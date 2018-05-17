@@ -1,0 +1,82 @@
+<g:ui_form>
+<div class="col-md-12" style="margin-bottom:12px;">
+	Please select the Finance Request to Merge on to
+</div>
+<div class="vsplit col-md-12 form-group form-horizontal">
+    <div class="col-md-3 text-right" style="padding-left:3px;">
+        <g:form_label for="finreq">
+            Finance Request:
+        </g:form_label>
+    </div>
+    <div class="col-md-9" style="padding-left:14px">
+        <g:ui_reference name="finReq" id="finReq" table="sn_sm_finance_request" completer="AJAXTableCompleter" query="active=true^sys_id!=${sysparm_sysID}"/>
+    </div>
+</div>
+<footer id="okCancel" class="modal-footer">
+    <input type="hidden" id="cancelled" name="cancelled" value="false"/>
+    <input type="hidden" id="finReqSysID" name="finReqSysID" value="${sysparm_sysID}"/>
+    <button onclick="return onCancel();" id="cancel" class="btn btn-default">
+        Cancel
+    </button>
+    <button id="ok" class="btn btn-primary" onclick="return validateForm(); ">
+        OK
+    </button>
+</footer>	
+</g:ui_form>
+
+<!----->
+
+function onCancel() {
+	var c = gel('cancelled');
+	c.value = "true";
+	GlideModal.get().destroy();
+	return false;
+}
+function validateForm() {
+	if (gel('finReq').value == '') {
+		alert("${JS:gs.getMessage('Please Select a Finance Request Record')}");
+			return false;
+		}
+	return true;
+	}
+  
+  <!----->
+  
+  if (cancelled == "false") {
+	var sFinReq = request.getParameter("finReq");
+	var finReqGr = new GlideRecord ("sn_sm_finance_request");
+	var oldFinReqGr = new GlideRecord("sn_sm_finance_request");
+	//
+	if (oldFinReqGr.get(finReqSysID)) {
+		if(finReqGr.get(sFinReq)) {
+			// Combine the Description and Short Description Fields
+			var sOldShortDescr = oldFinReqGr.getValue("short_description");
+			var sOldDescription = oldFinReqGr.getValue("description");
+			finReqGr.setValue("description", finReqGr.getValue("description") + "\n\n----\n\nDescription from " + oldFinReqGr.number + "\n" + sOldDescription);
+			finReqGr.setValue("short_description", finReqGr.getValue("short_description") + " / " + sOldShortDescr);
+			//
+			finReqGr.work_notes = "Comments and Work Notes from " + oldFinReqGr.number + ": \n\n" + this._getJournalEntry();
+			// Don't fire notifications
+			finReqGr.setUseEngines(false);
+			finReqGr.update();
+		}
+		oldFinReqGr.work_notes = "Merged in to " + finReqGr.number + " - cancelling Finance Request " + oldFinReqGr.number + ".";
+		oldFinReqGr.setValue('state', '7');
+		oldFinReqGr.update();
+	}
+	gs.addInfoMessage("Merged "+oldFinReqGr.number+" to "+finReqGr.number);
+	response.sendRedirect("sn_sm_finance_request.do?sys_id=" + sFinReq);
+}
+
+function _getJournalEntry() {
+	var sElement = '';
+	var sysJourn = new GlideRecord("sys_journal_field");
+	sysJourn.addQuery("element_id", finReqSysID);
+	sysJourn.query();
+	while(sysJourn.next()) {
+		sElement += sysJourn.sys_created_on + ' - ' +
+		sysJourn.sys_created_by + ' (' + sysJourn.element + ')\n' +
+		sysJourn.value + '\n\n';
+	}
+	return sElement;
+}
