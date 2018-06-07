@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+    <g:evaluate var="jvar_instance">
+        gs.getProperty("instance_name");
+    </g:evaluate>
+    <g:evaluate var="jvar_buildtag">
+        gs.getProperty("glide.buildtag.last");
+    </g:evaluate>
+    <g:evaluate var="jvar_builddate">
+        gs.getProperty("glide.builddate.last");
+    </g:evaluate>
+    <link href="8c388e6ddb221300968b7d9ebf9619de.cssdbx" rel="stylesheet" type="text/css"></link>
+    <style>
+        .jumbotron {
+            background-color: #eee;
+        }
+        div.row {
+            margin: 20px auto;
+        }
+    </style>
+    <div class="container theme-showcase" role="main">
+        <div class="jumbotron">
+            <h1>Diagnostics</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div>Instance ID</div>
+            </div>
+            <div class="col-md-6">
+                <div>${jvar_instance}</div>
+            </div>
+            <div class="col-md-6">
+                <div>Build tag</div>
+            </div>
+            <div class="col-md-6">
+                <div>${jvar_buildtag}</div>
+            </div>
+            <div class="col-md-6">
+                <div>Build date</div>
+            </div>
+            <div class="col-md-6">
+                <div>${jvar_builddate}</div>
+            </div>
+        </div>
+    </div>
+</j:jelly>
