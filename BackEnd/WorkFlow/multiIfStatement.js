@@ -13,7 +13,7 @@ function ifScript() {
 			result.byod = true;
 		}
 		if (workflow.scratchpad.activation == 'true') {
-			result.byod = true;
+			result.activation = true;
 		}
 		if (!(result.desk || result.mobile || result.byod || result.activation)) {
 			result.none = true;
