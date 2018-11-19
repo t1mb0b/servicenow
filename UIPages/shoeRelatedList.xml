@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+<g:evaluate var="jvar_guid" expression="gs.generateGUID(this);" />
+<j:set var="jvar_n" value="show_incidents_${jvar_guid}:${ref}"/>
+<g:reference_decoration id="${jvar_n}" field="${ref}"
+  onclick="showRelatedList('${ref}'); "
+  title="${gs.getMessage('Show related incidents')}" image="images/icons/tasks.gifx" icon="icon-tree-right"/>
+
+<script>
+// show related list
+function showRelatedList(reference) {
+    try {
+        var displayValue = g_form.getDisplayBox(reference).value;
+        var title = 'Showing records related to: ' + displayValue;
+        var s = reference.split('.');
+        var referenceField = s[s.length - 1];
+        var query = referenceField + '=' + g_form.getValue(reference);
+
+        var gdw = new GlideModal('show_list');
+        gdw.setTitle(title);
+        gdw.setSize(750);
+        gdw.setPreference('focusTrap', true);
+        gdw.setPreference('table', 'incident_list');
+        gdw.setPreference('sysparm_query', query);
+        gdw.setPreference('title', 'A New Title');
+        gdw.render();
+    } catch (e) {
+        jslog('error showing related list');
+        jslog(e);
+    }
+}
+
+</script>
+</j:jelly> 
