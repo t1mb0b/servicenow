@@ -60,3 +60,25 @@ incGr.watch_list = watchList.join();
 // Update the record  
 incGr.update();  
 }  
+
+====
+	
+var userID, currentWatchList;
+var newWatchList = [];
+var groupID = producer.getValue('group_reference');
+var grGroupMember = new GlideRecord('sys_user_grmember');
+
+grGroupMember.addQuery('user.active','true');
+grGroupMember.addQuery('group', groupID);
+
+while(grGroupMember.next()){
+    userID = grGroupMember.getValue('user');
+
+    if (newWatchList.indexOf(userID) < 0) {
+        newWatchList.push(userID);
+    }
+}
+currentWatchList = current.getValue('watch_list');
+newWatchList =  currentWatchList + newWatchList.join(','); //stringifies
+
+current.setValue('watch_list', newWatchList);
