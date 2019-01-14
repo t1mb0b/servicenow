@@ -29,3 +29,28 @@ while(x in parent)
 		parent.child.display = grChild.getDisplayValue();
 	}
 }
+
+=====
+	
+	<table class="table table-rounded" ng-if="data.divList" ng-repeat="h in data.divList">
+       <thead>
+         <tr>
+           <th>{{h.parent.display}}</th>
+           <th></th>
+           <th>Room Number: {{h.parent.room}}</th>
+         </tr>
+       </thead>
+         <tbody >
+         <tr ng-repeat="s in h.parent.child">
+           <td>
+           {{s.user_last}}, {{s.user_first}}
+           </td>
+           <td>
+             {{s.user_title}}
+           </td>
+           <td>
+             {{s.user_office_phone}}
+           </td>
+         </tr>
+       </tbody>
+     </table>
