@@ -9,7 +9,7 @@ function addItem(){
    var catalog_item = current.cat_item;
    var sList = getCIList(); //our list from req item as a string
    var aList = sList.split(",");
-   
+
    var dList;
    if (aList.length > 1){
       dList = aList.pop();   //remove one item and put that in the dList for further processing in the workflow
@@ -26,7 +26,7 @@ function getCIList(){
    var result = '';
    // Report
    if(current.cat_item == '82ab5df4d54901001257883c4b437267'){
-      result = current.variables.report; 
+      result = current.variables.report;
       //Dist List
    }else if(current.cat_item == '6d8bc970d54901001257883c4b4372c7'){
       result = current.variables.dist_list;
@@ -48,9 +48,9 @@ function createRequestedItem(catalog_item, request_id, aList){
    gr.request = request_id;
    gr.u_requested_for = current.variables.onboarded_user;
    req_item_sysid = gr.insert();
-   
+
    insertVariables(catalog_item, req_item_sysid, aList);
-   
+
    return req_item_sysid;
 }
 
@@ -71,7 +71,7 @@ function createVariableInstance(item_option_new, item_option_new_name, order, aL
    gr.item_option_new  = item_option_new;
    gr.value = getVariableValue(item_option_new_name, aList);
    gr.order = order;
-   
+
    return  gr.insert();
 }
 
@@ -100,10 +100,10 @@ function getVariableValue(item_option_new_name, aList){
    }else if(item_option_new_name == 'afe_number'){
       result = current.variables.afe_number;
 
-// Added by IK for including the business reason in sub catalog items for folder request       
-       
+// Added by IK for including the business reason in sub catalog items for folder request
+
    }else if(item_option_new_name == 'business_reason_text'){
-      result = current.variables.business_reason_text;     
+      result = current.variables.business_reason_text;
    }else{
       result = '';
    }
@@ -126,3 +126,5 @@ function updateRequestedItem(req_item_sysid, dList){
       req.update();
    }
 }
+
+//
