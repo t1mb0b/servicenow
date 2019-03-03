@@ -1,4 +1,4 @@
-(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+(function process( /*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 	// Declare Data Object
 	var oData = request.body.data;
 	// Initialize Query to Tim Tasks table
@@ -9,12 +9,12 @@
 	oGr.work_notes = oData.work_notes;
 	oGr.description = oData.description;
 	oGr.assignment_group.setDisplayValue(oData.assignment_group);
-	/* 
+	/*
 	   Function to check if the name sent in the request matches
 	   something in the sys_user table. If not, set the
 	   opened_by to 'SAP User' service account. As an added
-	   bonus, let's also log the user name in the description 
-	   of the task. 
+	   bonus, let's also log the user name in the description
+	   of the task.
 	*/
 	function setOpenedBy() {
 		// Check if user exists in sys_user table
@@ -35,8 +35,8 @@
 	oGr.insert();
 	// Declare the response object
 	var oResponseObj = {};
-		oResponseObj.number = oGr.number;
-		oResponseObj.sys_id = oGr.sys_id;
-		// Return response with number and sys_id to be stored on the remote end for reference
-		return oResponseObj;
-	})(request, response);
+	oResponseObj.number = oGr.number;
+	oResponseObj.sys_id = oGr.sys_id;
+	// Return response with number and sys_id to be stored on the remote end for reference
+	return oResponseObj;
+})(request, response);

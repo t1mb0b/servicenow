@@ -9,16 +9,16 @@ function onAfter(current, previous) {
     while (dict.next()) {
         var newValue = paddAndLinkRefs(current.value);
         current.value = newValue; //update audit record
-		current.setWorkflow(false);
-		current.autoSysFields(false);
-		current.update();
+        current.setWorkflow(false);
+        current.autoSysFields(false);
+        current.update();
         var audit = new GlideRecord('sys_audit');
         audit.addEncodedQuery('documentkey=' + current.element_id + '^fieldname=' + current.element + '^ORDERBYDESCrecord_checkpoint');
         audit.query();
         if (audit.next()) {
             audit.newvalue = newValue;
-			audit.setWorkflow(false);
-			audit.autoSysFields(false);
+            audit.setWorkflow(false);
+            audit.autoSysFields(false);
             audit.update();
         }
     }

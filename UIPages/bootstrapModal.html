@@ -1,31 +1,26 @@
 <div class="modal-content">
-<div class="modal-header">
-<h4 class="modal-title">
-<button type="button" class="close" 
-ng-click="c.modalInstance.close()">
-<span aria-hidden="true">&times;</span>
-</button>
-${Escalate} {{ c.data.tableLabel.toString() + " " + c.data.recordNumber.toString() }}
-</h4>
-</div>
-<div class="modal-body">
-<form name="escalate" class="form-horizontal">
-<div class="form-group col-md-12">
-<label class="control-label" for="escalateReason">Reason for Escalation:</label><br />
-<div>                     
-<textarea class="form-control" 
-rows="5" 
-id="escalateReason" 
-name="escalateReason" 
-ng-model="c.data.escalate_reason" 
-ng-require="true"></textarea>
-</div>
-</div>
-</form>
-</div>
-<div class="modal-footer">
-<button type="button" name="submit" class="btn btn-primary" ng-click="c.onSubmitModal(c.data.recordId)">${Submit}</button>
-<!--<button type="button" name="cancel" class="btn btn-secondary" data-dismiss="modal" ng-click="c.modalInstance.close()" >${Cancel}</button>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <button type="button" class="close" ng-click="c.modalInstance.close()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            ${Escalate} {{ c.data.tableLabel.toString() + " " + c.data.recordNumber.toString() }}
+        </h4>
+    </div>
+    <div class="modal-body">
+        <form name="escalate" class="form-horizontal">
+            <div class="form-group col-md-12">
+                <label class="control-label" for="escalateReason">Reason for Escalation:</label><br />
+                <div>
+                    <textarea class="form-control" rows="5" id="escalateReason" name="escalateReason" ng-model="c.data.escalate_reason"
+                        ng-require="true"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" name="submit" class="btn btn-primary" ng-click="c.onSubmitModal(c.data.recordId)">${Submit}</button>
+        <!--<button type="button" name="cancel" class="btn btn-secondary" data-dismiss="modal" ng-click="c.modalInstance.close()" >${Cancel}</button>
 <div ng-if="c.message" id="errorMessage" class="alert alert-danger" role="alert">{{ c.message }}</div>
 <div ng-if="c.success" id="successMessage" class="alert alert-success" role="alert">{{ c.success }}</div>
 </div>
