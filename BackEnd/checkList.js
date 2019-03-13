@@ -1,11 +1,11 @@
 // Business Rule
 // condition
-new NRMCatalogUtils().hasChecklist(current.getUniqueValue()) && current.state.changesTo('3')
+new CatalogUtils().hasChecklist(current.getUniqueValue()) && current.state.changesTo('3')
 // script
 (function executeRule(current, previous /*null when async*/ ) {
 
-    var nrmUtils = new NRMCatalogUtils();
-    if (nrmUtils.hasUncheckedItems(current.getUniqueValue())) {
+    var catUtils = new CatalogUtils();
+    if (catUtils.hasUncheckedItems(current.getUniqueValue())) {
         gs.addInfoMessage('Please close tasks');
         current.setAbortAction(true);
     }
@@ -14,15 +14,15 @@ new NRMCatalogUtils().hasChecklist(current.getUniqueValue()) && current.state.ch
 
 // invoke from workflow catalog task- use setNewGuid() to get the task sys_id
 // can also use taskId = task.insert(), which returns the sys_id of the task
-var listTemplate = nrmUtils.getChecklistTemplate('Setup New Hire Access');
-nrmUtils.generateChecklist(listTemplate, task.getTableName(), task.setNewGuid());
+var listTemplate = catUtils.getChecklistTemplate('Setup New Hire Access');
+catUtils.generateChecklist(listTemplate, task.getTableName(), task.setNewGuid());
 
 // invoke from BR
 (function executeRule(current, previous /*null when async*/ ) {
     var task = current.getUniqueValue();
     var table = current.getTableName();
-    var template = nrmUtils.getChecklistTemplate('Sample Checklist'); //PUT YOUR CHECKLIST NAME HERE
-    nrmUtils.generateChecklist(template, table, task);
+    var template = catUtils.getChecklistTemplate('Sample Checklist'); //PUT YOUR CHECKLIST NAME HERE
+    catUtils.generateChecklist(template, table, task);
 })(current, previous);
 
 // Methods
