@@ -13,13 +13,13 @@ function onSubmit() {
 	if (permissionsObj) {
 		// console.log("We have permissions");
 		permissionsArr = permissionsObj.filter(function(permission){ 
-			return permission.name === "LULU ALL PO Buyer"; 
+			return permission.name === "ALL PO Buyer"; 
 		});
 	// If we have a permission selected, check if it has a role requiring attachments
 	// TODO: possibly handle with a little more elegance; loop vs relying on first element of object
 	} else if (roleObj) {
 		// console.log("We have a role");
-		if (roleObj[0].description.indexOf("LULU ALL PO Buyer") > -1) {
+		if (roleObj[0].description.indexOf("ALL PO Buyer") > -1) {
 			roleAttachment = true;
 		}
 	}
@@ -82,7 +82,7 @@ function onChange(control, oldValue, newValue, isLoading) {
 	
 	g_form.hideFieldMsg('role_permissions_description', true);
 
-	var ciAjax = new GlideAjax('FAIRolePermissionUtilAjax');
+	var ciAjax = new GlideAjax('RolePermissionUtilAjax');
 	ciAjax.addParam('sysparm_name', 'getCiData');
 	ciAjax.addParam('sysparm_ciSysId', newValue);
 	ciAjax.getXMLAnswer(displayInfo);
@@ -98,7 +98,7 @@ function displayInfo(response) {
 		setClientData('roleObj', ciObj);
 		// Check if the array has any values; if so, set a field message for the permissions which require an attachment
 		// TODO: Implement checking against an array of permission names vs. just a single one
-		if (ciObj[0].description.indexOf("LULU ALL PO Buyer") > -1) {
+		if (ciObj[0].description.indexOf("ALL PO Buyer") > -1) {
 			g_form.showFieldMsg('role_permissions_description', 'Please note the role you have selected (' + ciObj[0].name + ') requires a signed document attached', 'info', false);
 			/* TODO: Implement message for translations
 			getMessage("Please note the role you have selected.",
@@ -133,7 +133,7 @@ function onChange(control, oldValue, newValue, isLoading) {
 	
 	g_form.hideFieldMsg('role_permissions_description', true);
 
-	var ciAjax = new GlideAjax('FAIRolePermissionUtilAjax');
+	var ciAjax = new GlideAjax('RolePermissionUtilAjax');
 	ciAjax.addParam('sysparm_name', 'getCiData');
 	ciAjax.addParam('sysparm_ciSysId', newValue);
 	ciAjax.getXMLAnswer(displayInfo);
@@ -161,7 +161,7 @@ function displayInfo(response) {
 		setClientData('permissionsObj', ciObj);
 		// Check for a permission which requires an attachment
 		var permissionsArr = ciObj.filter(function(permission){ 
-			return permission.name === "LULU ALL PO Buyer"; 
+			return permission.name === "ALL PO Buyer"; 
 		});
 		// Check if the array has any values; if so, set a field message for the permissions which require an attachment
 		// TODO: Implement checking against an array of permission names vs. just a single one
