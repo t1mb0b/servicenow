@@ -8,9 +8,9 @@ userGr.addNotNullQuery("u_account_expires");
 userGr.addQuery('source','CONTAINS','OU=Contractor').addOrCondition('source','CONTAINS','OU=Temporary Employee');
 userGr.query();
 while(userGr.next()){
-	var dExpire = new GlideDateTime(userGr.u_account_expires.split(' ')[0]);
-	var dFirst = new GlideDateTime(gs.daysAgo(iFirstReminder).split(' ')[0]);
-	var dFinal = new GlideDateTime(gs.daysAgo(iFinalReminder).split(' ')[0]);
+	var dExpire = new GlideDateTime(userGr.u_account_expires).getLocalDate();
+	var dFirst = new GlideDateTime(gs.daysAgo(iFirstReminder)).getLocalDate();
+	var dFinal = new GlideDateTime(gs.daysAgo(iFinalReminder)).getLocalDate();
 	var userEvent = userGr.preferred_language == "fq" ? "account.expiry.reminder.fr" : "account.expiry.reminder.en";
 	if(dExpire.equals(dFirst)) {
 		gs.eventQueue(userEvent, userGr, userGr.sys_id);
