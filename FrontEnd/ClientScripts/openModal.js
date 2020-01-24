@@ -30,3 +30,13 @@ function getLink(response) {
 		]
 	});
 }
+
+function getLink2(response) {
+	spModal.open({
+		title: 'Lease Document',
+		message: getMessage('Message') + '<br /> <br /><a href="' + response + '" target="_blank"><img src="image.jpg" width="75" height="75"/></a>' + '<br /><br />' + getMessage('Message 2'),
+		buttons: [
+			{label:'✔ ' + getMessage('Close'), cancel: true}
+		]
+	});
+}
