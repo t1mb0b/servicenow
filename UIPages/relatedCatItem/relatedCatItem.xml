@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+​
+		<j2:if test="${gs.hasRole('itil') || gs.hasRole('knowledge')}">
+			<g:evaluate var="jvar_is_doctype" expression="GlideMobileExtensions.getDeviceType() == 'doctype'"/>
+			<j2:set var="jvar_t" value="$[kb.sys_id]" />
+			<g2:evaluate var="tasks" jelly="true" expression="
+				var tasks = new GlideRecord('kb_2_sc');
+				var versioningInstalled = new KBCommon().isVersioningInstalled();
+				var target = readOnlyPage ? '_blank': '_parent';
+				if(versioningInstalled &amp;&amp; !kb.summary.nil()){
+					tasks.addQuery('kb_knowledge.summary',kb.summary);
+					tasks.addQuery('kb_knowledge.sys_created_on','&lt;=',kb.sys_created_on);
+				}
+				else
+				tasks.addQuery('kb_knowledge', kb.sys_id);
+				tasks.query();"/>
+			<j2:if test="$[tasks.hasNext()]">
+​
+				<div>
+					<p><span class="snc-article-footer-metadata-title">${gs.getMessage("Related Catalog Items")}$[SP]</span></p>
+					<span id="attachments-content" class="attachments-content">
+						<j2:while test="$[tasks.next()]">
+							<g2:evaluate var="jvar_task_exists">
+								var attachedTask = new GlideRecord("sc_cat_item");
+								attachedTask.get(tasks.sc_cat_item);
+							</g2:evaluate>
+							<j2:choose>
+								<j2:when test="$[jvar_task_exists]">
+									<p><a class="obvious" aria-label="${ALLOW_JELLY: gs.getMessage('{0}', ['$[HTML:tasks.sc_cat_item.name]'])}" href="nav_to.do?uri=%2Fcom.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3D$[tasks.sc_cat_item]" target="$[target]">
+										<j2:choose>
+											<j2:when test="$[!jvar_is_doctype || jvar_isMSIE8 || jvar_isMSIE7]">
+												<span class="icon-document snc-article-incident-icon" />
+											</j2:when>
+											<j2:otherwise>
+												<img src="images/icons/kb_task.gifx" alt="$[HTML:tasks.sc_cat_item.name]"/>
+											</j2:otherwise>
+										</j2:choose>
+										$[HTML:tasks.sc_cat_item.name]
+									</a></p>
+								</j2:when>
+								<j2:otherwise>
+									<g2:evaluate>tasks.deleteRecord();</g2:evaluate>
+								</j2:otherwise>
+							</j2:choose>
+						</j2:while>
+					</span>
+				</div>
+			</j2:if>
+		</j2:if>
+</j:jelly>
