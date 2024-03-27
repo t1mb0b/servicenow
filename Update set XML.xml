@@ -1,0 +1,14 @@
+<?xml version=“1.0” encoding=“UTF-8"?>
+<application version=“1.0” name=“My Application” scope=“global”>
+  <table name=“incident”>
+    <field name=“priority” type=“integer”/>
+    <form name=“default”>
+      <field name=“short_description” visible=“true”/>
+    </form>
+  </table>
+  <workflow name=“incident”>
+    <state name=“new”>
+      <activity name=“assign” assigned_to=“incident.assignment_group”/>
+    </state>
+  </workflow>
+</application>
